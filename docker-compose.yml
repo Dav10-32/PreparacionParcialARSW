@@ -1,0 +1,26 @@
+services:
+  facade:
+    build: ./facade
+    ports:
+      - "8080:8080"
+    environment:
+      - ALPHAVANTAGE_API_KEY=${ALPHAVANTAGE_API_KEY:-demo}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000}
+    networks:
+      - stocknet
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - REACT_APP_API_URL=http://localhost:8080
+    ports:
+      - "3000:80"
+    depends_on:
+      - facade
+    networks:
+      - stocknet
+
+networks:
+  stocknet:
+    driver: bridge
